@@ -2,7 +2,7 @@
 
 # Features
 
-**Whats Next**
+:star **Whats Next**
 - [ ] Synchronous logging
 - [ ] Basic Logging to the console
 - [ ] Gangster Logging Macros
