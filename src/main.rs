@@ -7,16 +7,20 @@ use std::sync::OnceLock;
 use chrono::format;
 use config::*;
 use logger::*;
-use loggy::info;
+use loggy::{error, info, warn};
 
 static LOGGER: OnceLock<Logger> = OnceLock::new();
 
 fn main() {
-    let config = Config::builder().build();
+    let mut config = Config::builder()
+        .timeformat(TimeformatType::ClockDateMonthYear)
+        .build();
     let logger = Logger::new(config, Format::PlainText);
     LOGGER.set(logger).expect("Logger already initialized");
 
-    info!("message".to_owned());
+    info!("message");
 
-    info!("another log".to_owned());
+    error!("error log");
+
+    warn!("Warning log");
 }

@@ -9,3 +9,4 @@ path = "src/lib.rs"
 
 [dependencies]
 chrono = "0.4.40"
+crossterm = "0.28.1"

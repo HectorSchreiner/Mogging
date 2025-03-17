@@ -23,8 +23,14 @@ impl ConfigBuilder {
         }
     }
 
-    pub fn output(&mut self, output: OutputType) {
+    pub fn output(mut self, output: OutputType) -> Self {
         self.output = output;
+        self
+    }
+
+    pub fn timeformat(mut self, format: TimeformatType) -> Self {
+        self.timeformat = format;
+        self
     }
 
     pub fn build(self) -> Config {
