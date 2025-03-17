@@ -12,7 +12,7 @@ impl Logger {
         Self { config, format }
     }
 
-    pub fn log(&mut self, level: Level, message: String) {
+    pub fn log(&self, level: Level, message: String) {
         match self.config.output {
             OutputType::Console => Self::console_write(level, message),
         }
