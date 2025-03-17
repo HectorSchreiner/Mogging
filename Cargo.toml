@@ -3,4 +3,8 @@ name = "loggy"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "loggy"
+path = "src/lib.rs"
+
 [dependencies]
