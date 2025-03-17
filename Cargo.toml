@@ -8,3 +8,4 @@ name = "loggy"
 path = "src/lib.rs"
 
 [dependencies]
+chrono = "0.4.40"
