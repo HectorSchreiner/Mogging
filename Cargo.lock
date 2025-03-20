@@ -167,14 +167,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "30bde2b3dc3671ae49d8e2e9f044c7c005836e7a023ee57cffa25ab82764bb9e"
 
 [[package]]
-name = "loggy"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "crossterm",
-]
-
-[[package]]
 name = "mio"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -184,6 +176,14 @@ dependencies = [
  "log",
  "wasi",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "mogging"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "crossterm",
 ]
 
 [[package]]

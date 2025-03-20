@@ -1,10 +1,7 @@
-use crate::config::*;
-use crate::logger::*;
-
 #[macro_export]
 macro_rules! info {
     ($msg:expr) => {
-        if let Some(logger) = LOGGER.get() {
+        if let Some(logger) = MOGGER.get() {
             logger.log(Level::Info, $msg);
         } else {
             println!("error");
@@ -14,7 +11,7 @@ macro_rules! info {
 #[macro_export]
 macro_rules! warn {
     ($msg:expr) => {
-        if let Some(logger) = LOGGER.get() {
+        if let Some(logger) = MOGGER.get() {
             logger.log(Level::Warning, $msg);
         } else {
             println!("error");
@@ -25,8 +22,20 @@ macro_rules! warn {
 #[macro_export]
 macro_rules! error {
     ($msg:expr) => {
-        if let Some(logger) = LOGGER.get() {
+        if let Some(logger) = MOGGER.get() {
             logger.log(Level::Error, $msg);
+        } else {
+            println!("error");
+        }
+    };
+}
+
+
+#[macro_export]
+macro_rules! debug {
+    ($msg:expr) => {
+        if let Some(logger) = MOGGER.get() {
+            logger.log(Level::Debug, $msg);
         } else {
             println!("error");
         }

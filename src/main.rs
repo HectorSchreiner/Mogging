@@ -1,26 +1,23 @@
 mod config;
-mod logger;
+mod mogger;
 
-use std::fmt::Formatter;
 use std::sync::OnceLock;
 
-use chrono::format;
 use config::*;
-use logger::*;
-use loggy::{error, info, warn};
+use mogger::*;
+use mogging::*;
 
-static LOGGER: OnceLock<Logger> = OnceLock::new();
+pub static MOGGER: OnceLock<Mogger> = OnceLock::new();
 
 fn main() {
-    let mut config = Config::builder()
-        .timeformat(TimeformatType::ClockDateMonthYear)
+    let config = Config::builder()
+        .timeformat(Some(TimeFormatType::ClockDateMonthYear))
+        .level_format(Some(LevelFormatType::Default))
         .build();
-    let logger = Logger::new(config, Format::PlainText);
-    LOGGER.set(logger).expect("Logger already initialized");
-
-    info!("message");
-
-    error!("error log");
-
-    warn!("Warning log");
+    let mogger = Mogger::new(config, Format::PlainText);
+    MOGGER.set(mogger).expect("Logger already initialized");
+    debug!("Debug Log");
+    info!("Info Log");
+    error!("Error Log");
+    warn!("Warning Log");
 }
