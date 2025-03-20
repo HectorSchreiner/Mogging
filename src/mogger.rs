@@ -36,14 +36,13 @@ impl Mogger {
     fn console_write_level(&self, level: Level) {
         match &self.config.level_option { 
             Some(_) => {
-                let mut binding = stdout();
                 let _ = match level {
-                    Level::Debug => binding.execute(SetForegroundColor(Color::White)),
-                    Level::Info => binding.execute(SetForegroundColor(Color::White)),
-                    Level::Warning => binding.execute(SetForegroundColor(Color::Yellow)),
-                    Level::Error => binding.execute(SetForegroundColor(Color::Red)),
+                    Level::Debug => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::White),).unwrap(),
+                    Level::Info => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::White),).unwrap(),
+                    Level::Warning => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::Yellow),).unwrap(),
+                    Level::Error => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::Red),).unwrap(),
                 };
-                execute!(stdout(), Print(format!("[{:?}] ", level)), ResetColor,).unwrap();
+                execute!(stdout(), ResetColor).unwrap();
             },
             None => (), // we might want to do something else if there is a none
         }
