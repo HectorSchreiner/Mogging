@@ -1,17 +1,17 @@
 mod config;
+mod global;
 mod mogger;
 
 use std::sync::OnceLock;
 
 use config::*;
+use global::MOGGER;
+use mogger::Mogger;
 use mogger::*;
 use mogging::*;
 
-pub static MOGGER: OnceLock<Mogger> = OnceLock::new();
-
 fn main() {
-    let mogger = Mogger::default();
-    MOGGER.set(mogger).expect("Logger already initialized");
+    Mogger::default().init();
 
     debug!("Debug Log");
     info!("Info Log");

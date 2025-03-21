@@ -8,6 +8,7 @@ use crossterm::{
 use std::io::stdout;
 
 use crate::config::*;
+use crate::global::MOGGER;
 
 #[derive(Debug)]
 pub struct Mogger {
@@ -16,6 +17,12 @@ pub struct Mogger {
 }
 
 impl Mogger {
+    pub fn init(self) {
+        let mogger = self;
+
+        MOGGER.set(mogger).expect("Mogger was already initialized");
+    }
+
     pub fn new(config: Config, output_format: Format) -> Self {
         Self {
             config,

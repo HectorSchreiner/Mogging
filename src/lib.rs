@@ -1,11 +1,9 @@
-use std::sync::OnceLock;
-
-use mogger::Mogger;
-
 mod config;
-mod mogger;
+mod global;
 mod macros;
+mod mogger;
 
-pub static MOGGER: OnceLock<Mogger> = OnceLock::new();
+pub use global::MOGGER;
+pub use mogger::Mogger;
 
 pub fn logger() {}

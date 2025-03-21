@@ -1,3 +1,5 @@
+use crate::mogger::*;
+
 #[macro_export]
 macro_rules! info {
     ($msg:expr) => {
@@ -29,7 +31,6 @@ macro_rules! error {
         }
     };
 }
-
 
 #[macro_export]
 macro_rules! debug {
