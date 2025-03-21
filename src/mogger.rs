@@ -1,23 +1,35 @@
 #![allow(dead_code)]
 
-use std::io::stdout;
 use chrono::Utc;
 use crossterm::{
     style::{Color, Print, ResetColor, SetForegroundColor},
     *,
 };
+use std::io::stdout;
 
 use crate::config::*;
 
 #[derive(Debug)]
 pub struct Mogger {
     pub config: Config,
-    pub format: Format,
+    pub output_format: Format,
 }
 
 impl Mogger {
-    pub fn new(config: Config, format: Format) -> Self {
-        Self { config, format }
+    pub fn new(config: Config, output_format: Format) -> Self {
+        Self {
+            config,
+            output_format,
+        }
+    }
+
+    pub fn default() -> Self {
+        let config = Config::builder()
+            .timeformat(Some(TimeFormatType::ClockDateMonthYear))
+            .level_format(Some(LevelFormatType::Default))
+            .build();
+
+        Mogger::new(config, Format::PlainText)
     }
 
     pub fn log(&self, level: Level, message: &str) {
@@ -29,28 +41,45 @@ impl Mogger {
     fn console_write(&self, level: Level, message: &str) {
         self.console_write_level(level);
         self.console_write_time();
-        
+
         println!("{}", message);
     }
 
     fn console_write_level(&self, level: Level) {
-        match &self.config.level_option { 
+        match &self.config.level_option {
             Some(_) => {
                 let _ = match level {
-                    Level::Debug => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::White),).unwrap(),
-                    Level::Info => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::White),).unwrap(),
-                    Level::Warning => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::Yellow),).unwrap(),
-                    Level::Error => execute!(stdout(), Print(format!("[{:?}] ", level)), SetForegroundColor(Color::Red),).unwrap(),
+                    Level::Debug => execute!(stdout(), Print(format!("[{:?}] ", level)),).unwrap(),
+                    Level::Info => execute!(
+                        stdout(),
+                        SetForegroundColor(Color::White),
+                        Print(format!("[{:?}] ", level)),
+                    )
+                    .unwrap(),
+                    Level::Warning => execute!(
+                        stdout(),
+                        SetForegroundColor(Color::Yellow),
+                        Print(format!("[{:?}] ", level)),
+                    )
+                    .unwrap(),
+                    Level::Error => execute!(
+                        stdout(),
+                        SetForegroundColor(Color::Red),
+                        Print(format!("[{:?}] ", level)),
+                    )
+                    .unwrap(),
                 };
-                execute!(stdout(), ResetColor).unwrap();
-            },
+            }
             None => (), // we might want to do something else if there is a none
         }
+        execute!(stdout(), ResetColor).unwrap();
     }
 
     fn console_write_time(&self) {
         match &self.config.time_option {
-            Some(_) => execute!(stdout(), Print(format!("[{:?}] ", Self::get_time(&self)))).unwrap(),
+            Some(_) => {
+                execute!(stdout(), Print(format!("[{:?}] ", Self::get_time(&self)))).unwrap()
+            }
             None => (), // we might want to do something else if there is a none
         }
     }
@@ -66,7 +95,7 @@ impl Mogger {
                     formatted = format!("{}", time.format("%H:%M %d/%m/%Y"))
                 }
             }
-        } 
+        }
         format!("{}", formatted)
     }
 }
