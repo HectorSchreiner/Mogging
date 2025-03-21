@@ -1,14 +1,16 @@
 #![allow(dead_code)]
-
 use chrono::Utc;
 use crossterm::{
     style::{Color, Print, ResetColor, SetForegroundColor},
     *,
 };
-use std::io::stdout;
+use std::{io::stdout, marker::PhantomData};
 
 use crate::config::*;
 use crate::global::MOGGER;
+
+struct Uninitialized;
+struct Initialized;
 
 #[derive(Debug)]
 pub struct Mogger {
@@ -17,26 +19,31 @@ pub struct Mogger {
 }
 
 impl Mogger {
-    pub fn init(self) {
-        let mogger = self;
-
-        MOGGER.set(mogger).expect("Mogger was already initialized");
+    // Initializes the mogger, this should be called in all methods that tries to init a mogger
+    fn init(mogger: Mogger) {
+        MOGGER.set(mogger).expect("Logger already initialized");
     }
 
-    pub fn new(config: Config, output_format: Format) -> Self {
-        Self {
+    pub fn new(&self, config: Config, output_format: Format) {
+        let mogger = Mogger {
             config,
             output_format,
-        }
+        };
+        Self::init(mogger);
     }
 
-    pub fn default() -> Self {
+    pub fn default() {
         let config = Config::builder()
             .timeformat(Some(TimeFormatType::ClockDateMonthYear))
             .level_format(Some(LevelFormatType::Default))
             .build();
 
-        Mogger::new(config, Format::PlainText)
+        let mogger = Mogger {
+            config,
+            output_format: Format::PlainText,
+        };
+
+        Self::init(mogger);
     }
 
     pub fn log(&self, level: Level, message: &str) {

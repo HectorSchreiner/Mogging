@@ -2,16 +2,13 @@ mod config;
 mod global;
 mod mogger;
 
-use std::sync::OnceLock;
-
-use config::*;
 use global::MOGGER;
 use mogger::Mogger;
 use mogger::*;
 use mogging::*;
 
 fn main() {
-    Mogger::default().init();
+    Mogger::default();
 
     debug!("Debug Log");
     info!("Info Log");
