@@ -1,5 +1,5 @@
-# Blazingly Fast Logging Libary
-
+# Fast Logging Libary
+Mogging is a Blazingly Fast Logging Libary written in Rust, which mogs all other logging libaries. 
 # Features
 
 **Whats Next**
