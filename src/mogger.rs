@@ -4,7 +4,7 @@ use crossterm::{
     style::{Color, Print, ResetColor, SetForegroundColor},
     *,
 };
-use std::{io::stdout, marker::PhantomData};
+use std::io::stdout;
 
 use crate::config::*;
 use crate::global::MOGGER;
@@ -53,13 +53,7 @@ impl Mogger {
     }
 
     fn console_write(&self, level: Level, message: &str) {
-        self.console_write_level(level);
-        self.console_write_time();
-
-        println!("{}", message);
-    }
-
-    fn console_write_level(&self, level: Level) {
+        // print the level (warn, error...) to the console
         match &self.config.level_option {
             Some(_) => {
                 let _ = match level {
@@ -87,15 +81,16 @@ impl Mogger {
             None => (), // we might want to do something else if there is a none
         }
         execute!(stdout(), ResetColor).unwrap();
-    }
 
-    fn console_write_time(&self) {
+        // print the time to the console
         match &self.config.time_option {
             Some(_) => {
                 execute!(stdout(), Print(format!("[{:?}] ", Self::get_time(&self)))).unwrap()
             }
             None => (), // we might want to do something else if there is a none
         }
+
+        println!("{}", message);
     }
 
     fn get_time(&self) -> String {
