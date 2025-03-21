@@ -3,6 +3,6 @@ Mogging is a Blazingly Fast Logging Libary written in Rust, which mogs all other
 # Features
 
 **Whats Next**
-- [ ] Synchronous logging
-- [ ] Basic Logging to the console
-- [ ] Gangster Logging Macros
+- [x] Synchronous logging
+- [x] Basic Logging to the console
+- [x] Gangster Logging Macros
