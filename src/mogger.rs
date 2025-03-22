@@ -21,7 +21,9 @@ pub struct Mogger {
 impl Mogger {
     // Initializes the mogger, this should be called in all methods that tries to init a mogger
     fn init(mogger: Mogger) {
-        MOGGER.set(mogger).expect("Logger already initialized");
+        if MOGGER.get().is_none() {
+            let _ = MOGGER.set(mogger);
+        }
     }
 
     pub fn new(&self, config: Config, output_format: LogFormat) {

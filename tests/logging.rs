@@ -1,4 +1,4 @@
-use mogging::{Mogger, MOGGER};
+use mogging::{info, LogLevel, Mogger, MOGGER};
 
 #[test]
 pub fn initialize() {
@@ -7,4 +7,7 @@ pub fn initialize() {
 }
 
 #[test]
-pub fn info_macro_test() {}
+pub fn info_macro_test() {
+    Mogger::default();
+    info!("This should run");
+}
