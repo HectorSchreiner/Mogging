@@ -4,7 +4,6 @@ mod mogger;
 
 use global::MOGGER;
 use mogger::Mogger;
-use mogger::*;
 use mogging::*;
 
 fn main() {

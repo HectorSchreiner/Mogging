@@ -2,9 +2,9 @@
 macro_rules! info {
     ($msg:expr) => {
         if let Some(mogger) = MOGGER.get() {
-            mogger.log(Level::Info, $msg);
+            mogger.log(LogLevel::Info, $msg);
         } else {
-            println!("error");
+            panic!("Paniced when trying to print info log, make sure the MOGGER is initialized")
         }
     };
 }
@@ -13,9 +13,9 @@ macro_rules! info {
 macro_rules! warn {
     ($msg:expr) => {
         if let Some(mogger) = MOGGER.get() {
-            mogger.log(Level::Warning, $msg);
+            mogger.log(LogLevel::Warning, $msg);
         } else {
-            println!("error");
+            eprintln!("error");
         }
     };
 }
@@ -24,9 +24,9 @@ macro_rules! warn {
 macro_rules! error {
     ($msg:expr) => {
         if let Some(mogger) = MOGGER.get() {
-            mogger.log(Level::Error, $msg);
+            mogger.log(LogLevel::Error, $msg);
         } else {
-            println!("error");
+            eprintln!("error");
         }
     };
 }
@@ -35,9 +35,9 @@ macro_rules! error {
 macro_rules! debug {
     ($msg:expr) => {
         if let Some(mogger) = MOGGER.get() {
-            mogger.log(Level::Debug, $msg);
+            mogger.log(LogLevel::Debug, $msg);
         } else {
-            println!("error");
+            eprintln!("error");
         }
     };
 }

@@ -15,7 +15,7 @@ struct Initialized;
 #[derive(Debug)]
 pub struct Mogger {
     pub config: Config,
-    pub output_format: Format,
+    pub output_format: LogFormat,
 }
 
 impl Mogger {
@@ -24,7 +24,7 @@ impl Mogger {
         MOGGER.set(mogger).expect("Logger already initialized");
     }
 
-    pub fn new(&self, config: Config, output_format: Format) {
+    pub fn new(&self, config: Config, output_format: LogFormat) {
         let mogger = Mogger {
             config,
             output_format,
@@ -40,37 +40,39 @@ impl Mogger {
 
         let mogger = Mogger {
             config,
-            output_format: Format::PlainText,
+            output_format: LogFormat::PlainText,
         };
 
         Self::init(mogger);
     }
 
-    pub fn log(&self, level: Level, message: &str) {
+    pub fn log(&self, level: LogLevel, message: &str) {
         match self.config.output {
             OutputType::Console => Self::console_write(&self, level, message),
         }
     }
 
-    fn console_write(&self, level: Level, message: &str) {
+    fn console_write(&self, level: LogLevel, message: &str) {
         // print the level (warn, error...) to the console
         match &self.config.level_option {
             Some(_) => {
                 let _ = match level {
-                    Level::Debug => execute!(stdout(), Print(format!("[{:?}] ", level)),).unwrap(),
-                    Level::Info => execute!(
+                    LogLevel::Debug => {
+                        execute!(stdout(), Print(format!("[{:?}] ", level)),).unwrap()
+                    }
+                    LogLevel::Info => execute!(
                         stdout(),
                         SetForegroundColor(Color::White),
                         Print(format!("[{:?}] ", level)),
                     )
                     .unwrap(),
-                    Level::Warning => execute!(
+                    LogLevel::Warning => execute!(
                         stdout(),
                         SetForegroundColor(Color::Yellow),
                         Print(format!("[{:?}] ", level)),
                     )
                     .unwrap(),
-                    Level::Error => execute!(
+                    LogLevel::Error => execute!(
                         stdout(),
                         SetForegroundColor(Color::Red),
                         Print(format!("[{:?}] ", level)),
@@ -110,7 +112,7 @@ impl Mogger {
 }
 
 #[derive(Debug)]
-pub enum Level {
+pub enum LogLevel {
     Debug,
     Info,
     Warning,
@@ -118,6 +120,6 @@ pub enum Level {
 }
 
 #[derive(Debug)]
-pub enum Format {
+pub enum LogFormat {
     PlainText,
 }

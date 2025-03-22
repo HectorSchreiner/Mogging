@@ -8,5 +8,6 @@ name = "mogging"
 path = "src/lib.rs"
 
 [dependencies]
+assert_cmd = "2.0.16"
 chrono = "0.4.40"
 crossterm = "0.28.1"
