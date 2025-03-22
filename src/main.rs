@@ -1,10 +1,11 @@
 mod config;
 mod global;
+mod macros;
 mod mogger;
 
 use global::MOGGER;
 use mogger::Mogger;
-use mogging::*;
+use mogger::*;
 
 fn main() {
     Mogger::default();

@@ -1,4 +1,4 @@
-use mogging::{info, Mogger, MOGGER};
+use mogging::{Mogger, MOGGER};
 
 #[test]
 pub fn initialize() {
