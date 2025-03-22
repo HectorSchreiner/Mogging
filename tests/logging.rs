@@ -1,13 +1,17 @@
-use mogging::{info, LogLevel, Mogger, MOGGER};
+use mogging::{debug, error, info, warn, LogLevel, Mogger, MOGGER};
 
 #[test]
-pub fn initialize() {
+pub fn initialize_test() {
     Mogger::default();
     assert!(MOGGER.get().is_some());
 }
 
 #[test]
-pub fn info_macro_test() {
-    Mogger::default();
-    info!("This should run");
+pub fn info_test() {
+    info!("Debug Log");
+}
+
+#[test]
+pub fn debug_test() {
+    debug!("Debug Log");
 }

@@ -8,7 +8,7 @@ use mogger::Mogger;
 use mogger::*;
 
 fn main() {
-    Mogger::default();
+    //Mogger::default();
 
     debug!("Debug Log");
     info!("Info Log");
