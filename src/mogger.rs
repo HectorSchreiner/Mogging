@@ -20,10 +20,8 @@ pub struct Mogger {
 
 impl Mogger {
     // Initializes the mogger, this should be called in all methods that tries to init a mogger
-    fn init(mogger: Mogger) {
-        if MOGGER.get().is_none() {
-            let _ = MOGGER.set(mogger);
-        }
+    fn init() {
+        let _ = MOGGER.get_or_init(|| Mogger::create_default());
     }
 
     pub fn new(&self, config: Config, output_format: LogFormat) {
@@ -31,7 +29,7 @@ impl Mogger {
             config,
             output_format,
         };
-        Self::init(mogger);
+        Self::init();
     }
 
     pub fn default() {
@@ -45,7 +43,19 @@ impl Mogger {
             output_format: LogFormat::PlainText,
         };
 
-        Self::init(mogger);
+        Self::init();
+    }
+
+    fn create_default() -> Self {
+        let config = Config::builder()
+            .timeformat(Some(TimeFormatType::ClockDateMonthYear))
+            .level_format(Some(LevelFormatType::Default))
+            .build();
+
+        Mogger {
+            config,
+            output_format: LogFormat::PlainText,
+        }
     }
 
     pub fn log(&self, level: LogLevel, message: &str) {

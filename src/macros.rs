@@ -15,7 +15,7 @@ macro_rules! warn {
         if let Some(mogger) = MOGGER.get() {
             mogger.log(LogLevel::Warning, $msg);
         } else {
-            eprintln!("error");
+            panic!("Paniced when trying to print info log, make sure the MOGGER is initialized")
         }
     };
 }
@@ -26,7 +26,7 @@ macro_rules! error {
         if let Some(mogger) = MOGGER.get() {
             mogger.log(LogLevel::Error, $msg);
         } else {
-            eprintln!("error");
+            panic!("Paniced when trying to print info log, make sure the MOGGER is initialized")
         }
     };
 }
@@ -37,7 +37,7 @@ macro_rules! debug {
         if let Some(mogger) = MOGGER.get() {
             mogger.log(LogLevel::Debug, $msg);
         } else {
-            eprintln!("error");
+            panic!("Paniced when trying to print info log, make sure the MOGGER is initialized")
         }
     };
 }
