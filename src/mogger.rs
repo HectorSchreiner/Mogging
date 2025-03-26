@@ -9,9 +9,6 @@ use std::io::stdout;
 use crate::config::*;
 use crate::global::MOGGER;
 
-struct Uninitialized;
-struct Initialized;
-
 #[derive(Debug)]
 pub struct Mogger {
     pub config: Config,

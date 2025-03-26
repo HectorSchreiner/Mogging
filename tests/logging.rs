@@ -9,15 +9,13 @@ pub fn initialize_test() {
 #[test]
 pub fn info_test() {
     let _ = Mogger::default();
-    info!("asdkaljds");
-    info!("something");
+    info!("test");
     //assert!(MOGGER.get().is_some());
 }
 
 #[test]
 pub fn debug_test() {
     let _ = Mogger::default();
-    info!("asdkaljds");
-    info!("something");
+    debug!("test");
     //assert!(MOGGER.get().is_some());
 }
