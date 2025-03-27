@@ -1,21 +1,13 @@
-use mogging::{debug, error, info, warn, LogLevel, Mogger, MOGGER};
+use mogging::{LogLevel, Mogger, MOGGER};
 
 #[test]
 pub fn initialize_test() {
-    let _ = Mogger::default();
+    Mogger::create_default_mogger().init();
     assert!(MOGGER.get().is_some());
 }
 
 #[test]
-pub fn info_test() {
-    let _ = Mogger::default();
-    info!("test");
-    //assert!(MOGGER.get().is_some());
-}
-
-#[test]
-pub fn debug_test() {
-    let _ = Mogger::default();
-    debug!("test");
-    //assert!(MOGGER.get().is_some());
+pub fn log_to_i32_conversion_test() {
+    assert_eq!(i32::from(LogLevel::Debug), 1);
+    assert_eq!(LogLevel::Debug, LogLevel::from(1));
 }

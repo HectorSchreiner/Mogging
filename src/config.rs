@@ -1,7 +1,4 @@
 #![allow(dead_code)]
-
-use std::error::Error;
-
 use crate::LogLevel;
 
 #[derive(Debug)]
@@ -11,7 +8,7 @@ pub struct Config {
     pub level_option: Option<LevelFormatType>,
     pub batch_size: i32,
     pub flush_timer: f32,
-    pub level_clamp: Option<(LogLevel, LogLevel)>,
+    pub level_clamp: (LogLevel, LogLevel),
 }
 
 impl Config {
@@ -26,18 +23,19 @@ pub struct ConfigBuilder {
     pub level_option: Option<LevelFormatType>,
     pub batch_size: i32,
     pub flush_timer: f32,
-    pub level_clamp: Option<(LogLevel, LogLevel)>,
+    // min, max
+    pub level_clamp: (LogLevel, LogLevel),
 }
 
 impl ConfigBuilder {
     pub fn default() -> ConfigBuilder {
         Self {
             output: OutputType::Console,
-            time_option: None,
-            level_option: None,
+            time_option: Some(TimeFormatType::Default),
+            level_option: Some(LevelFormatType::Default),
             batch_size: 0,
             flush_timer: 0.0,
-            level_clamp: None,
+            level_clamp: (LogLevel::Debug, LogLevel::Error),
         }
     }
 
@@ -63,6 +61,11 @@ impl ConfigBuilder {
 
     pub fn set_flush_timer(mut self, flush_timer: f32) -> Self {
         self.flush_timer = flush_timer;
+        self
+    }
+
+    pub fn set_level_clamp(mut self, level_clamp: (LogLevel, LogLevel)) -> Self {
+        self.level_clamp = level_clamp;
         self
     }
 

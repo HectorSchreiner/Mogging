@@ -1,10 +1,11 @@
 #![allow(dead_code)]
 use chrono::Utc;
 use crossterm::{
+    cursor::MoveDown,
     style::{Color, Print, ResetColor, SetForegroundColor},
     *,
 };
-use std::io::stdout;
+use std::{fmt::format, io::stdout};
 
 use crate::config::*;
 use crate::global::MOGGER;
@@ -17,91 +18,46 @@ pub struct Mogger {
 
 impl Mogger {
     // Initializes the mogger, this should be called in all methods that tries to init a mogger
-    fn init() {
-        let _ = MOGGER.set(Mogger::create_default());
+    pub fn init(self) {
+        let _ = MOGGER.set(self);
     }
 
-    pub fn new(&self, config: Config, output_format: LogFormat) {
-        let mogger = Mogger {
-            config,
-            output_format,
-        };
-        Self::init();
-    }
-
-    pub fn default() {
-        let config = Config::builder()
-            .timeformat(Some(TimeFormatType::ClockDateMonthYear))
-            .level_format(Some(LevelFormatType::Default))
-            .build();
-
-        let mogger = Mogger {
-            config,
-            output_format: LogFormat::PlainText,
-        };
-
-        Self::init();
-    }
-
-    fn create_default() -> Self {
-        let config = Config::builder()
-            .timeformat(Some(TimeFormatType::ClockDateMonthYear))
-            .level_format(Some(LevelFormatType::Default))
-            .build();
-
+    pub fn new(config: Config, output_format: LogFormat) -> Mogger {
         Mogger {
             config,
-            output_format: LogFormat::PlainText,
+            output_format,
         }
     }
 
+    pub fn create_default_mogger() -> Self {
+        let config = Config::builder()
+            .set_timeformat(Some(TimeFormatType::ClockDateMonthYear))
+            .set_level_format(Some(LevelFormatType::Default))
+            .build();
+
+        Mogger::new(config, LogFormat::PlainText)
+    }
+
     pub fn log(&self, level: LogLevel, message: &str) {
-        match self.config.output {
-            OutputType::Console => Self::console_write(&self, level, message),
+        let (min, max) = (
+            self.config.level_clamp.0.clone(),
+            self.config.level_clamp.1.clone(),
+        );
+        let num = i32::from(level);
+
+        if num >= i32::from(min) && num <= i32::from(max) {
+            match self.config.output {
+                OutputType::Console => Self::console_write(&self, level, message),
+            }
         }
     }
 
     fn console_write(&self, level: LogLevel, message: &str) {
         // print the level (warn, error...) to the console
-        match &self.config.level_option {
-            Some(_) => {
-                let _ = match level {
-                    LogLevel::Debug => {
-                        execute!(stdout(), Print(format!("[{:?}] ", level)),).unwrap()
-                    }
-                    LogLevel::Info => execute!(
-                        stdout(),
-                        SetForegroundColor(Color::White),
-                        Print(format!("[{:?}] ", level)),
-                    )
-                    .unwrap(),
-                    LogLevel::Warning => execute!(
-                        stdout(),
-                        SetForegroundColor(Color::Yellow),
-                        Print(format!("[{:?}] ", level)),
-                    )
-                    .unwrap(),
-                    LogLevel::Error => execute!(
-                        stdout(),
-                        SetForegroundColor(Color::Red),
-                        Print(format!("[{:?}] ", level)),
-                    )
-                    .unwrap(),
-                };
-            }
-            None => (), // we might want to do something else if there is a none
-        }
-        execute!(stdout(), ResetColor).unwrap();
+        let mut stdout = stdout();
 
-        // print the time to the console
-        match &self.config.time_option {
-            Some(_) => {
-                execute!(stdout(), Print(format!("[{:?}] ", Self::get_time(&self)))).unwrap()
-            }
-            None => (), // we might want to do something else if there is a none
-        }
-
-        println!("{}", message);
+        stdout.execute(Print(format!("{}", message))).unwrap();
+        stdout.execute(MoveUp(1)).unwrap();
     }
 
     fn get_time(&self) -> String {
@@ -120,15 +76,41 @@ impl Mogger {
     }
 }
 
-#[derive(Debug)]
+#[repr(i32)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum LogLevel {
     Debug,
     Info,
     Warning,
     Error,
+    Undefined,
 }
 
 #[derive(Debug)]
 pub enum LogFormat {
     PlainText,
+}
+
+impl From<i32> for LogLevel {
+    fn from(value: i32) -> Self {
+        match value {
+            1 => Self::Debug,
+            2 => Self::Info,
+            3 => Self::Warning,
+            4 => Self::Error,
+            _ => Self::Undefined,
+        }
+    }
+}
+
+impl From<LogLevel> for i32 {
+    fn from(log_level: LogLevel) -> i32 {
+        match log_level {
+            LogLevel::Debug => 1,
+            LogLevel::Info => 2,
+            LogLevel::Warning => 3,
+            LogLevel::Error => 4,
+            LogLevel::Undefined => 0,
+        }
+    }
 }
