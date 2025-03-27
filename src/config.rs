@@ -11,7 +11,7 @@ pub struct Config {
     pub level_option: Option<LevelFormatType>,
     pub batch_size: i32,
     pub flush_timer: f32,
-    pub clamp: Option<(LogLevel, LogLevel)>,
+    pub level_clamp: Option<(LogLevel, LogLevel)>,
 }
 
 impl Config {
@@ -26,7 +26,7 @@ pub struct ConfigBuilder {
     pub level_option: Option<LevelFormatType>,
     pub batch_size: i32,
     pub flush_timer: f32,
-    pub clamp: Option<(LogLevel, LogLevel)>,
+    pub level_clamp: Option<(LogLevel, LogLevel)>,
 }
 
 impl ConfigBuilder {
@@ -37,7 +37,7 @@ impl ConfigBuilder {
             level_option: None,
             batch_size: 0,
             flush_timer: 0.0,
-            clamp: None,
+            level_clamp: None,
         }
     }
 
@@ -73,7 +73,7 @@ impl ConfigBuilder {
             level_option: self.level_option,
             batch_size: self.batch_size,
             flush_timer: self.flush_timer,
-            clamp: self.clamp,
+            level_clamp: self.level_clamp,
         }
     }
 }
