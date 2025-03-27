@@ -1,10 +1,17 @@
 #![allow(dead_code)]
 
+use std::error::Error;
+
+use crate::LogLevel;
+
 #[derive(Debug)]
 pub struct Config {
     pub output: OutputType,
     pub time_option: Option<TimeFormatType>,
-    pub level_option: Option<LevelFormatType>
+    pub level_option: Option<LevelFormatType>,
+    pub batch_size: i32,
+    pub flush_timer: f32,
+    pub clamp: Option<(LogLevel, LogLevel)>,
 }
 
 impl Config {
@@ -16,7 +23,10 @@ impl Config {
 pub struct ConfigBuilder {
     pub output: OutputType,
     pub time_option: Option<TimeFormatType>,
-    pub level_option: Option<LevelFormatType>
+    pub level_option: Option<LevelFormatType>,
+    pub batch_size: i32,
+    pub flush_timer: f32,
+    pub clamp: Option<(LogLevel, LogLevel)>,
 }
 
 impl ConfigBuilder {
@@ -25,21 +35,34 @@ impl ConfigBuilder {
             output: OutputType::Console,
             time_option: None,
             level_option: None,
+            batch_size: 0,
+            flush_timer: 0.0,
+            clamp: None,
         }
     }
 
-    pub fn level_format(mut self, format: Option<LevelFormatType>) -> Self {
-        self.level_option = format;
-        self
-    }
-
-    pub fn output(mut self, output: OutputType) -> Self {
+    pub fn set_output(mut self, output: OutputType) -> Self {
         self.output = output;
         self
     }
 
-    pub fn timeformat(mut self, format: Option<TimeFormatType>) -> Self {
+    pub fn set_timeformat(mut self, format: Option<TimeFormatType>) -> Self {
         self.time_option = format;
+        self
+    }
+
+    pub fn set_level_format(mut self, format: Option<LevelFormatType>) -> Self {
+        self.level_option = format;
+        self
+    }
+
+    pub fn set_batch_size(mut self, batch_size: i32) -> Self {
+        self.batch_size = batch_size;
+        self
+    }
+
+    pub fn set_flush_timer(mut self, flush_timer: f32) -> Self {
+        self.flush_timer = flush_timer;
         self
     }
 
@@ -47,7 +70,10 @@ impl ConfigBuilder {
         Config {
             output: self.output,
             time_option: self.time_option,
-            level_option: self.level_option
+            level_option: self.level_option,
+            batch_size: self.batch_size,
+            flush_timer: self.flush_timer,
+            clamp: self.clamp,
         }
     }
 }
@@ -66,5 +92,3 @@ pub enum TimeFormatType {
 pub enum LevelFormatType {
     Default,
 }
-
-
