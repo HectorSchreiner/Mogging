@@ -27,9 +27,12 @@ Mogging is an aMazingly & Blazingly Fast Logging Libary written in Rust, which m
 | - | - |
 | Default Crossterm | 13.165259ms |
 | Println! | 10.618974ms |
+| Print! | 548.132µs |
 
 ```
 Benchmark with: 10000 prints
-Crossterm Logging a took : 13.165259ms
-Println Logging took     : 10.618974ms
+Crossterm Logging a took        : 12.604879ms
+Println Logging took            : 11.014081ms
+Print Logging took              : 528.816µs
+Crossterm queue Logging took    : 831.967µs
 ```
