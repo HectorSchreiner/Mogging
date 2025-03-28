@@ -9,6 +9,7 @@ use crossterm::{
 use std::{
     fmt::format,
     io::{stdout, Write},
+    thread,
 };
 
 use crate::config::*;
@@ -55,8 +56,11 @@ impl Mogger {
         if num >= i32::from(min) && num <= i32::from(max) {}
     }
 
-    fn console_write(&self, level: LogLevel, message: &str) {
-
+    fn console_write(&self, level: LogLevel, message: String) {
+        thread::spawn(|| {
+            let message = message;
+            print!("{}", message);
+        });
         // print the level (warn, error...) to the console
         //let mut stdout = stdout();
     }
