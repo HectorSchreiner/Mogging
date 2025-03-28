@@ -51,10 +51,12 @@ impl Mogger {
         );
         let num = i32::from(level);
 
+        // if level is between the clamp, then match the correct writer.
         if num >= i32::from(min) && num <= i32::from(max) {}
     }
 
     fn console_write(&self, level: LogLevel, message: &str) {
+
         // print the level (warn, error...) to the console
         //let mut stdout = stdout();
     }
@@ -123,6 +125,7 @@ impl From<LogLevel> for i32 {
 impl Drop for Mogger {
     fn drop(&mut self) {
         stdout().flush().unwrap();
+        println!("exited");
         disable_raw_mode().unwrap();
     }
 }

@@ -20,3 +20,16 @@ Mogging is an aMazingly & Blazingly Fast Logging Libary written in Rust, which m
 - [ ] Improve Control over the formatting, colors and more
 - [ ] Add benchmarking (compare against common logging libaries)
 - [ ] GPU multithreading
+
+# Benchmarking
+10000 prints
+| Type | time |
+| - | - |
+| Crossterm Default | 13.165259ms |
+| Println! Default | 10.618974ms |
+
+```
+Benchmark with: 10000 prints
+Crossterm Logging a took : 13.165259ms
+Println Logging took     : 10.618974ms
+```

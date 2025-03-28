@@ -19,22 +19,23 @@ fn main() {
     let config = Config::builder().build();
 
     Mogger::new(config, LogFormat::PlainText).init();
-
+    let amm = 10000;
     let a = Instant::now(); // Start timer
-    for _ in 0..10000 {
-        debug!("Debug Log");
+    for _ in 0..amm {
+        execute!(stdout(), Print("someting")).unwrap();
     }
 
     let duration_a = a.elapsed(); // Stop timer
 
     let b = Instant::now(); // Start timer
-    for _ in 0..10000 {
-        print!("Debug Log");
+    for _ in 0..amm {
+        println!("Debug Log");
     }
     let duration_b = b.elapsed(); // Stop timer
     disable_raw_mode().unwrap();
     print!("{}[2J", 27 as char);
-    println!("");
-    println!("Logging a took : {:?}", duration_a);
-    println!("Logging b took : {:?}", duration_b);
+    println!();
+    println!("Benchmark with: {} prints", amm);
+    println!("Crossterm Logging a took : {:?}", duration_a);
+    println!("Println Logging took     : {:?}", duration_b);
 }
