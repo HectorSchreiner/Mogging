@@ -8,7 +8,7 @@ use crossterm::{
 };
 use std::{
     fmt::format,
-    io::{stdout, Write},
+    io::{stdout, BufWriter, StdoutLock, Write},
     thread,
 };
 
@@ -19,6 +19,7 @@ use crate::global::MOGGER;
 pub struct Mogger {
     pub config: Config,
     pub output_format: LogFormat,
+    buf_writer: BufWriter<StdoutLock<'static>>,
 }
 
 impl Mogger {
@@ -28,11 +29,17 @@ impl Mogger {
         let _ = MOGGER.set(self);
     }
 
+    fn initialize_bufwriter() -> BufWriter<StdoutLock<'static>> {
+        BufWriter::new(stdout().lock())
+    }
+
     pub fn new(config: Config, output_format: LogFormat) -> Mogger {
         let capacity = config.batch_size.clone() as usize;
+        let mut buf_writer = BufWriter::new(stdout().lock());
         Mogger {
             config,
             output_format,
+            buf_writer,
         }
     }
 
@@ -46,21 +53,28 @@ impl Mogger {
     }
 
     pub fn log(&self, level: LogLevel, message: &str) {
-        let (min, max) = (
-            self.config.level_clamp.0.clone(),
-            self.config.level_clamp.1.clone(),
-        );
-        let num = i32::from(level);
-
         // if level is between the clamp, then match the correct writer.
-        if num >= i32::from(min) && num <= i32::from(max) {}
+        //self.console_write(level, message);
     }
 
-    fn console_write(&self, level: LogLevel, message: String) {
-        thread::spawn(|| {
-            let message = message;
-            print!("{}", message);
-        });
+    fn console_write(
+        &self,
+        level: LogLevel,
+        message: &str,
+        writer: BufWriter<StdoutLock<'static>>,
+    ) {
+        //let message = message.to_string();
+        let mut msg = String::new();
+
+        msg.push_str("[");
+        msg.push_str(level.as_str());
+        msg.push_str("][");
+        msg.push_str(self.get_time().as_str());
+        msg.push_str("] ");
+        msg.push_str(message);
+        msg.push_str("\n");
+
+        let bytes = msg.as_bytes();
         // print the level (warn, error...) to the console
         //let mut stdout = stdout();
     }
@@ -123,7 +137,17 @@ impl From<LogLevel> for i32 {
         }
     }
 }
-
+impl LogLevel {
+    fn as_str(&self) -> &'static str {
+        match self {
+            LogLevel::Debug => "Debug",
+            LogLevel::Info => "Info",
+            LogLevel::Warning => "Warning",
+            LogLevel::Error => "Error",
+            LogLevel::Undefined => "Undefined",
+        }
+    }
+}
 // when the mogger is dropped aka. program exited,
 // we will disable rawmode
 impl Drop for Mogger {
