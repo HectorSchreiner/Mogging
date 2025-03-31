@@ -35,5 +35,5 @@ _______________________________________________
 Mogger Logging took             : 249.447µs
 Println Logging took            : 14.162727ms
 Print Logging took              : 862.997µs
-Crossterm queue Logging took    : 969.476µs
+Crossterm queue Logging took    : 969.456µs
 ```
