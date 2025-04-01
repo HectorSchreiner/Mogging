@@ -7,9 +7,7 @@ use crossterm::{
     *,
 };
 use std::{
-    fmt::format,
-    io::{stdout, BufWriter, StdoutLock, Write},
-    thread,
+    cell::RefCell, fmt::format, io::{stdout, BufWriter, Stdout, StdoutLock, Write}, sync::Mutex, thread
 };
 
 use crate::config::*;
@@ -19,7 +17,7 @@ use crate::global::MOGGER;
 pub struct Mogger {
     pub config: Config,
     pub output_format: LogFormat,
-    buf_writer: BufWriter<StdoutLock<'static>>,
+    pub buf_writer: BufWriter<Stdout>
 }
 
 impl Mogger {
@@ -35,7 +33,7 @@ impl Mogger {
 
     pub fn new(config: Config, output_format: LogFormat) -> Mogger {
         let capacity = config.batch_size.clone() as usize;
-        let mut buf_writer = BufWriter::new(stdout().lock());
+        let buf_writer = BufWriter::new(stdout());
         Mogger {
             config,
             output_format,
@@ -91,7 +89,7 @@ impl Mogger {
                 TimeFormatType::ClockDateMonthYear => {
                     formatted = format!("{}", time.format("%H:%M %d/%m/%Y"))
                 }
-            }
+        }
         }
         format!("{}", formatted)
     }

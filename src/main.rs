@@ -28,7 +28,7 @@ fn benchmark() {
     let amm = 100;
     let a = Instant::now(); // Start timer
 
-    let mut writer = BufWriter::new(stdout.lock());
+    let mut writer = BufWriter::new(stdout);
     for _ in 0..amm {
         let msg = "Debug Log\n".as_bytes();
         writer.write_all(msg).unwrap();
@@ -49,12 +49,6 @@ fn benchmark() {
     }
     let duration_c = c.elapsed(); // Stop timer
 
-    let d = Instant::now(); // Start timer
-    for _ in 0..amm {
-        queue!(stdout, Print("Debug Log\n")).unwrap();
-    }
-    let duration_d = d.elapsed(); // Stop timer
-
     disable_raw_mode().unwrap();
     print!("{}[2J", 27 as char); // clear the screen
     println!();
@@ -63,5 +57,4 @@ fn benchmark() {
     println!("Mogger Logging took             : {:?}", duration_a);
     println!("Println Logging took            : {:?}", duration_b);
     println!("Print Logging took              : {:?}", duration_c);
-    println!("Crossterm queue Logging took    : {:?}", duration_d);
 }
