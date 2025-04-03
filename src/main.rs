@@ -24,29 +24,31 @@ fn benchmark() {
 
     Mogger::new(config, LogFormat::PlainText).init();
     Mogger::create_default_mogger().init();
-    let mut stdout = io::stdout();
     let amm = 100;
     let a = Instant::now(); // Start timer
 
-    let mut writer = BufWriter::new(stdout);
+    let mut writer: BufWriter<io::Stdout> = BufWriter::new(stdout());
     for _ in 0..amm {
         let msg = "Debug Log\n".as_bytes();
         writer.write_all(msg).unwrap();
     }
 
     writer.flush().unwrap(); // Ensure all data is written
+    stdout().flush().unwrap();
     let duration_a = a.elapsed(); // Stop timer
 
     let b = Instant::now(); // Start timer
     for _ in 0..amm {
-        println!("Debug Log");
+        debug!("Debug Log");
     }
+    stdout().flush().unwrap();
     let duration_b = b.elapsed(); // Stop timer
-
+    
     let c = Instant::now(); // Start timer
     for _ in 0..amm {
         print!("Debug Log\n");
     }
+    stdout().flush().unwrap();
     let duration_c = c.elapsed(); // Stop timer
 
     disable_raw_mode().unwrap();

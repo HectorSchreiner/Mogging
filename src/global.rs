@@ -1,4 +1,4 @@
 use crate::mogger::Mogger;
-use std::sync::OnceLock;
+use std::sync::{Mutex, OnceLock};
 
-pub static MOGGER: OnceLock<Mogger> = OnceLock::new();
+pub static MOGGER: OnceLock<Mutex<Mogger>> = OnceLock::new();

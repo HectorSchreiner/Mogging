@@ -24,7 +24,7 @@ impl Mogger {
     // Initializes the mogger, this should be called in all methods that tries to init a mogger
     pub fn init(self) {
         enable_raw_mode().unwrap();
-        let _ = MOGGER.set(self);
+        let _ = MOGGER.set(Mutex::new(self));
     }
 
     fn initialize_bufwriter() -> BufWriter<StdoutLock<'static>> {
@@ -50,31 +50,25 @@ impl Mogger {
         Mogger::new(config, LogFormat::PlainText)
     }
 
-    pub fn log(&self, level: LogLevel, message: &str) {
+    pub fn log(&mut self, level: LogLevel, message: &str) {
         // if level is between the clamp, then match the correct writer.
-        //self.console_write(level, message);
+        self.console_write(level, message);
     }
 
-    fn console_write(
-        &self,
-        level: LogLevel,
-        message: &str,
-        writer: BufWriter<StdoutLock<'static>>,
-    ) {
-        //let message = message.to_string();
-        let mut msg = String::new();
-
-        msg.push_str("[");
-        msg.push_str(level.as_str());
-        msg.push_str("][");
-        msg.push_str(self.get_time().as_str());
-        msg.push_str("] ");
-        msg.push_str(message);
-        msg.push_str("\n");
-
-        let bytes = msg.as_bytes();
-        // print the level (warn, error...) to the console
-        //let mut stdout = stdout();
+    fn console_write(&mut self, level: LogLevel, message: &str) {
+        use std::fmt::Write;
+        let mut msg = String::with_capacity(128);
+    
+        write!(
+            msg,
+            "[{}][{}] {}\n",
+            level.as_str(),
+            self.get_time(),
+            message
+        ).unwrap();
+    
+        self.buf_writer.write_all(msg.as_bytes()).unwrap();
+        //self.buf_writer.flush().unwrap(); // force flush for benchmarking
     }
 
     fn add_log_to_batch(&self, log: String) {}

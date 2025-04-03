@@ -10,5 +10,6 @@ path = "src/lib.rs"
 [dependencies]
 assert_cmd = "2.0.16"
 chrono = "0.4.40"
+criterion = "0.5.1"
 crossterm = "0.28.1"
 instant = "0.1.13"
