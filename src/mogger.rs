@@ -7,7 +7,11 @@ use crossterm::{
     *,
 };
 use std::{
-    cell::RefCell, fmt::format, io::{stdout, BufWriter, Stdout, StdoutLock, Write}, sync::Mutex, thread
+    cell::RefCell,
+    fmt::format,
+    io::{stdout, BufWriter, Stdout, StdoutLock, Write},
+    sync::Mutex,
+    thread,
 };
 
 use crate::config::*;
@@ -17,13 +21,13 @@ use crate::global::MOGGER;
 pub struct Mogger {
     pub config: Config,
     pub output_format: LogFormat,
-    pub buf_writer: BufWriter<Stdout>
+    pub buf_writer: BufWriter<Stdout>,
 }
 
 impl Mogger {
     // Initializes the mogger, this should be called in all methods that tries to init a mogger
     pub fn init(self) {
-        enable_raw_mode().unwrap();
+        //enable_raw_mode().unwrap();
         let _ = MOGGER.set(Mutex::new(self));
     }
 
@@ -58,15 +62,16 @@ impl Mogger {
     fn console_write(&mut self, level: LogLevel, message: &str) {
         use std::fmt::Write;
         let mut msg = String::with_capacity(128);
-    
+
         write!(
             msg,
             "[{}][{}] {}\n",
             level.as_str(),
             self.get_time(),
             message
-        ).unwrap();
-    
+        )
+        .unwrap();
+
         self.buf_writer.write_all(msg.as_bytes()).unwrap();
         //self.buf_writer.flush().unwrap(); // force flush for benchmarking
     }
@@ -83,7 +88,7 @@ impl Mogger {
                 TimeFormatType::ClockDateMonthYear => {
                     formatted = format!("{}", time.format("%H:%M %d/%m/%Y"))
                 }
-        }
+            }
         }
         format!("{}", formatted)
     }

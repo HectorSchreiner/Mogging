@@ -45,3 +45,15 @@ macro_rules! debug {
         }
     };
 }
+
+#[macro_export]
+macro_rules! test {
+    ($msg:expr) => {
+        if let Some(mogger_mutex) = $crate::MOGGER.get() {
+            let mut mogger = mogger_mutex.lock().unwrap();
+            mogger.log($crate::LogLevel::Debug, $msg);
+        } else {
+            panic!("Panicked when trying to print debug log: MOGGER is not initialized.");
+        }
+    };
+}
