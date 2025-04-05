@@ -435,6 +435,7 @@ dependencies = [
  "criterion",
  "crossterm",
  "instant",
+ "itoa",
 ]
 
 [[package]]

@@ -7,13 +7,10 @@ use std::io::{self, stdout, BufWriter, Write};
 use std::time::Instant;
 
 use config::Config;
-use crossterm::style::Print;
 use crossterm::terminal::disable_raw_mode;
-use crossterm::{execute, queue};
 use global::*;
 use mogger::Mogger;
 use mogger::*;
-use std::thread;
 
 fn main() {
     benchmark();
@@ -24,26 +21,26 @@ fn benchmark() {
 
     Mogger::new(config, LogFormat::PlainText).init();
     Mogger::create_default_mogger().init();
-    let amm = 100;
+
+    let amm = 100000;
     let a = Instant::now(); // Start timer
 
     let mut writer: BufWriter<io::Stdout> = BufWriter::new(stdout());
     for _ in 0..amm {
         let msg = "Debug Log\n".as_bytes();
         writer.write_all(msg).unwrap();
+        writer.flush().unwrap(); // Ensure all data is written
     }
-
-    writer.flush().unwrap(); // Ensure all data is written
     stdout().flush().unwrap();
-    let duration_a = a.elapsed(); // Stop timer
 
+    let duration_a = a.elapsed(); // Stop timer
     let b = Instant::now(); // Start timer
     for _ in 0..amm {
         debug!("Debug Log");
     }
     stdout().flush().unwrap();
     let duration_b = b.elapsed(); // Stop timer
-    
+
     let c = Instant::now(); // Start timer
     for _ in 0..amm {
         print!("Debug Log\n");
@@ -53,10 +50,11 @@ fn benchmark() {
 
     disable_raw_mode().unwrap();
     print!("{}[2J", 27 as char); // clear the screen
+
     println!();
     println!("Benchmark with: {} prints", amm);
     println!("_______________________________________________");
-    println!("Mogger Logging took             : {:?}", duration_a);
-    println!("Println Logging took            : {:?}", duration_b);
+    println!("Bufwriter Logging took          : {:?}", duration_a);
+    println!("Mogger Logging took             : {:?}", duration_b);
     println!("Print Logging took              : {:?}", duration_c);
 }

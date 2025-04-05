@@ -1,17 +1,9 @@
 #![allow(dead_code)]
 use chrono::Utc;
-use crossterm::{
-    cursor::MoveDown,
-    style::{Color, Print, ResetColor, SetForegroundColor},
-    terminal::{disable_raw_mode, enable_raw_mode},
-    *,
-};
+use crossterm::terminal::disable_raw_mode;
 use std::{
-    cell::RefCell,
-    fmt::format,
     io::{stdout, BufWriter, Stdout, StdoutLock, Write},
     sync::Mutex,
-    thread,
 };
 
 use crate::config::*;
@@ -36,8 +28,7 @@ impl Mogger {
     }
 
     pub fn new(config: Config, output_format: LogFormat) -> Mogger {
-        let capacity = config.batch_size.clone() as usize;
-        let buf_writer = BufWriter::new(stdout());
+        let buf_writer = BufWriter::with_capacity(4096, stdout()); // why is setting it through the settings slower!!
         Mogger {
             config,
             output_format,
@@ -49,6 +40,7 @@ impl Mogger {
         let config = Config::builder()
             .set_timeformat(Some(TimeFormatType::ClockDateMonthYear))
             .set_level_format(Some(LevelFormatType::Default))
+            .set_batch_size(4096)
             .build();
 
         Mogger::new(config, LogFormat::PlainText)
@@ -60,41 +52,22 @@ impl Mogger {
     }
 
     fn console_write(&mut self, level: LogLevel, message: &str) {
-        use std::fmt::Write;
-        let mut msg = String::with_capacity(128);
+        let time = self.get_time_inline(); // Inlined + minimal alloc
+        let level_str = level.as_str();
 
-        write!(
-            msg,
-            "[{}][{}] {}\n",
-            level.as_str(),
-            self.get_time(),
-            message
-        )
-        .unwrap();
-
-        self.buf_writer.write_all(msg.as_bytes()).unwrap();
-        //self.buf_writer.flush().unwrap(); // force flush for benchmarking
+        let _ = write!(self.buf_writer, "[{}][{}] {}\n", level_str, time, message);
     }
 
-    fn add_log_to_batch(&self, log: String) {}
+    fn get_time_inline(&self) -> String {
+        let now = Utc::now();
 
-    fn get_time(&self) -> String {
-        let time = Utc::now();
-        let mut formatted = "".to_string();
-
-        if let Some(time_option) = &self.config.time_option {
-            match time_option {
-                TimeFormatType::Default => formatted = format!("{}", time.format("%H:%M")),
-                TimeFormatType::ClockDateMonthYear => {
-                    formatted = format!("{}", time.format("%H:%M %d/%m/%Y"))
-                }
-            }
+        match &self.config.time_option {
+            Some(TimeFormatType::Default) => now.format("%H:%M").to_string(),
+            Some(TimeFormatType::ClockDateMonthYear) => now.format("%H:%M %d/%m/%Y").to_string(),
+            _ => String::new(),
         }
-        format!("{}", formatted)
     }
 }
-
-pub fn add_log_to_batch(log: String, mogger: Mogger) {}
 
 #[repr(i32)]
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -149,8 +122,7 @@ impl LogLevel {
 // we will disable rawmode
 impl Drop for Mogger {
     fn drop(&mut self) {
-        stdout().flush().unwrap();
-        println!("exited");
+        let _ = self.buf_writer.flush();
         disable_raw_mode().unwrap();
     }
 }
