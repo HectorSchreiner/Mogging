@@ -6,7 +6,7 @@ pub struct Config {
     pub output: OutputType,
     pub time_option: Option<TimeFormatType>,
     pub level_option: Option<LevelFormatType>,
-    pub batch_size: i32,
+    pub batch_size: usize,
     pub flush_timer: f32,
     pub level_clamp: (LogLevel, LogLevel),
 }
@@ -17,11 +17,17 @@ impl Config {
     }
 }
 
+impl From<ConfigBuilder> for Config {
+    fn from(value: ConfigBuilder) -> Self {
+        value.build()
+    }
+}
+
 pub struct ConfigBuilder {
     pub output: OutputType,
     pub time_option: Option<TimeFormatType>,
     pub level_option: Option<LevelFormatType>,
-    pub batch_size: i32,
+    pub batch_size: usize,
     pub flush_timer: f32,
     // min, max
     pub level_clamp: (LogLevel, LogLevel),
@@ -39,32 +45,32 @@ impl ConfigBuilder {
         }
     }
 
-    pub fn set_output(mut self, output: OutputType) -> Self {
+    pub fn output(mut self, output: OutputType) -> Self {
         self.output = output;
         self
     }
 
-    pub fn set_timeformat(mut self, format: Option<TimeFormatType>) -> Self {
+    pub fn timeformat(mut self, format: Option<TimeFormatType>) -> Self {
         self.time_option = format;
         self
     }
 
-    pub fn set_level_format(mut self, format: Option<LevelFormatType>) -> Self {
+    pub fn level_format(mut self, format: Option<LevelFormatType>) -> Self {
         self.level_option = format;
         self
     }
 
-    pub fn set_batch_size(mut self, batch_size: i32) -> Self {
+    pub fn batch_size(mut self, batch_size: usize) -> Self {
         self.batch_size = batch_size;
         self
     }
 
-    pub fn set_flush_timer(mut self, flush_timer: f32) -> Self {
+    pub fn flush_timer(mut self, flush_timer: f32) -> Self {
         self.flush_timer = flush_timer;
         self
     }
 
-    pub fn set_level_clamp(mut self, level_clamp: (LogLevel, LogLevel)) -> Self {
+    pub fn level_clamp(mut self, level_clamp: (LogLevel, LogLevel)) -> Self {
         self.level_clamp = level_clamp;
         self
     }

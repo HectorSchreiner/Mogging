@@ -7,12 +7,16 @@ edition = "2021"
 name = "mogging"
 path = "src/lib.rs"
 
+[[bin]]
+lto = true
+path = "src/main.rs"
+name = "test"
+
 [dependencies]
 assert_cmd = "2.0.16"
 chrono = "0.4.40"
 crossterm = "0.28.1"
 instant = "0.1.13"
-itoa = "1.0.15"
 
 [dev-dependencies]
 criterion = "0.5.1"

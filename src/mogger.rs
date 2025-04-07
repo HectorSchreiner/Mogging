@@ -23,12 +23,10 @@ impl Mogger {
         let _ = MOGGER.set(Mutex::new(self));
     }
 
-    fn initialize_bufwriter() -> BufWriter<StdoutLock<'static>> {
-        BufWriter::new(stdout().lock())
-    }
-
-    pub fn new(config: Config, output_format: LogFormat) -> Mogger {
-        let buf_writer = BufWriter::with_capacity(4096, stdout()); // why is setting it through the settings slower!!
+    pub fn new<T: Into<Config>>(config: T, output_format: LogFormat) -> Mogger {
+        let config = config.into();
+        let batch_size = 4096;
+        let buf_writer = BufWriter::with_capacity(batch_size, stdout()); // why is setting it through the settings slower!!
         Mogger {
             config,
             output_format,
@@ -38,9 +36,9 @@ impl Mogger {
 
     pub fn create_default_mogger() -> Self {
         let config = Config::builder()
-            .set_timeformat(Some(TimeFormatType::ClockDateMonthYear))
-            .set_level_format(Some(LevelFormatType::Default))
-            .set_batch_size(4096)
+            .timeformat(Some(TimeFormatType::ClockDateMonthYear))
+            .level_format(Some(LevelFormatType::Default))
+            .batch_size(4096)
             .build();
 
         Mogger::new(config, LogFormat::PlainText)
@@ -48,6 +46,7 @@ impl Mogger {
 
     pub fn log(&mut self, level: LogLevel, message: &str) {
         // if level is between the clamp, then match the correct writer.
+        // mangler lidt
         self.console_write(level, message);
     }
 
