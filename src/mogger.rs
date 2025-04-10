@@ -17,7 +17,6 @@ pub struct Mogger {
 }
 
 impl Mogger {
-    // Initializes the mogger, this should be called in all methods that tries to init a mogger
     pub fn init(self) {
         //enable_raw_mode().unwrap();
         let _ = MOGGER.set(Mutex::new(self));
@@ -45,7 +44,7 @@ impl Mogger {
     }
 
     pub fn log(&mut self, level: LogLevel, message: &str) {
-        // if level is between the clamp, then match the correct writer.
+        // if level is between the clamp, then match the correct writer. todo
         // mangler lidt
         self.console_write(level, message);
     }
@@ -118,7 +117,7 @@ impl LogLevel {
     }
 }
 // when the mogger is dropped aka. program exited,
-// we will disable rawmode
+// disable the rawdogmode
 impl Drop for Mogger {
     fn drop(&mut self) {
         let _ = self.buf_writer.flush();
