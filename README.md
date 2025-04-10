@@ -10,6 +10,7 @@ Mogging is an aMazingly & Blazingly Fast Logging Libary written in Rust, which m
 - [x] Log Level sorting (only show logs from a certain level and up)
 
 **next**
+- [ ] builder pattern naming
 - [ ] dynamic batch sizing, and flush timing
 - [ ] Asynchronous outputting
 - [ ] GPU multithreading support!

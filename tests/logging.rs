@@ -8,6 +8,6 @@ pub fn initialize_test() {
 
 #[test]
 pub fn log_to_i32_conversion_test() {
-    assert_eq!(i32::from(LogLevel::Debug), 1);
-    assert_eq!(LogLevel::Debug, LogLevel::from(1));
+    assert_eq!(usize::from(LogLevel::Debug), 0);
+    assert_eq!(LogLevel::Debug, LogLevel::try_from(0).unwrap());
 }

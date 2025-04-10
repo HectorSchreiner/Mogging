@@ -2,7 +2,8 @@
 use chrono::Utc;
 use crossterm::terminal::disable_raw_mode;
 use std::{
-    io::{stdout, BufWriter, Stdout, StdoutLock, Write},
+    fmt::Error,
+    io::{stdout, BufWriter, Stdout, Write},
     sync::Mutex,
 };
 
@@ -44,9 +45,13 @@ impl Mogger {
     }
 
     pub fn log(&mut self, level: LogLevel, message: &str) {
-        // if level is between the clamp, then match the correct writer. todo
-        // mangler lidt
-        self.console_write(level, message);
+        let (level_min, level_max) = self.config.level_clamp;
+        let [level_min, level_max] = [level_min, level_max].map(usize::from);
+
+        // if level is between the clamp.
+        if (level_min..=level_max).contains(&level.into()) {
+            self.console_write(level, message);
+        }
     }
 
     fn console_write(&mut self, level: LogLevel, message: &str) {
@@ -74,7 +79,6 @@ pub enum LogLevel {
     Info,
     Warning,
     Error,
-    Undefined,
 }
 
 #[derive(Debug)]
@@ -82,26 +86,26 @@ pub enum LogFormat {
     PlainText,
 }
 
-impl From<i32> for LogLevel {
-    fn from(value: i32) -> Self {
+impl TryFrom<usize> for LogLevel {
+    type Error = &'static str;
+    fn try_from(value: usize) -> Result<Self, &'static str> {
         match value {
-            1 => Self::Debug,
-            2 => Self::Info,
-            3 => Self::Warning,
-            4 => Self::Error,
-            _ => Self::Undefined,
+            0 => Ok(Self::Debug),
+            1 => Ok(Self::Info),
+            2 => Ok(Self::Warning),
+            3 => Ok(Self::Error),
+            _ => Err("Invalid Value!"),
         }
     }
 }
 
-impl From<LogLevel> for i32 {
-    fn from(log_level: LogLevel) -> i32 {
+impl From<LogLevel> for usize {
+    fn from(log_level: LogLevel) -> usize {
         match log_level {
-            LogLevel::Debug => 1,
-            LogLevel::Info => 2,
-            LogLevel::Warning => 3,
-            LogLevel::Error => 4,
-            LogLevel::Undefined => 0,
+            LogLevel::Debug => 0,
+            LogLevel::Info => 1,
+            LogLevel::Warning => 2,
+            LogLevel::Error => 3,
         }
     }
 }
@@ -112,7 +116,6 @@ impl LogLevel {
             LogLevel::Info => "Info",
             LogLevel::Warning => "Warning",
             LogLevel::Error => "Error",
-            LogLevel::Undefined => "Undefined",
         }
     }
 }
