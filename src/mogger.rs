@@ -1,10 +1,11 @@
 #![allow(dead_code)]
+use chrono::DateTime;
 #[warn(unused_doc_comments)]
 use chrono::Utc;
 use crossterm::terminal::disable_raw_mode;
+use core::fmt;
 use std::{
-    io::{stdout, BufWriter, Stdout, Write},
-    sync::Mutex,
+    fmt::Arguments, io::{stdout, BufWriter, Stdout, Write}, sync::Mutex
 };
 
 use crate::config::*;
@@ -34,6 +35,11 @@ impl Mogger {
 
     /// Create a new mogger, from a configuraiton and an output_format specification.
     /// Returns a Mogger.
+    ///
+    /// # Example
+    /// ```no_run
+    /// Mogger::new()
+    /// ```
     pub fn new<T: Into<Config>>(config: T, output_format: LogFormat) -> Mogger {
         // This mogger still needs initialisation with the init method.
         let config = config.into();
@@ -56,21 +62,21 @@ impl Mogger {
     }
 
     /// Outputs the log.
-    pub fn log(&mut self, level: LogLevel, message: &str) {
+    pub fn log(&mut self, level: LogLevel, args: fmt::Arguments) {
         let (level_min, level_max) = self.config.level_clamp;
         let [level_min, level_max] = [level_min, level_max].map(usize::from);
 
         // if level is between the clamp.
         if (level_min..=level_max).contains(&level.into()) {
             match self.config.output {
-                OutputType::Console => self.console_write(level, message),
+                OutputType::Console => self.console_write(level, args),
                 OutputType::File => (),
             }
         }
     }
 
     /// Writes the log to the console.
-    fn console_write(&mut self, level: LogLevel, message: &str) {
+    fn console_write(&mut self, level: LogLevel, args: fmt::Arguments) {
         let level_str = level.as_str();
 
         let Config {
@@ -89,7 +95,7 @@ impl Mogger {
             write!(self.buf_writer, "[{}] ", self.get_time()).unwrap();
         }
 
-        let _ = write!(self.buf_writer, "{}\n", message);
+        let _ = write!(self.buf_writer, "{}\n", args);
         self.buf_writer.flush().unwrap();
     }
 

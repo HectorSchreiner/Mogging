@@ -3,7 +3,7 @@ use mogging::*;
 
 pub fn mogger_benchmark(c: &mut Criterion) {
     Mogger::default();
-    c.bench_function("mogger debug macro", |b| b.iter(|| test!("benchmark")));
+    //c.bench_function("mogger debug macro", |b| b.iter(|| ));
 }
 
 criterion_group!(benches, mogger_benchmark);

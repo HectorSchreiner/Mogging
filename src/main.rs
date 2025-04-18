@@ -3,6 +3,7 @@ mod global;
 mod macros;
 mod mogger;
 
+use std::fmt::format;
 use std::io::{self, stdout, BufWriter, Write};
 use std::time::Instant;
 
@@ -16,10 +17,9 @@ fn main() {
     //benchmark();
     Mogger::default();
 
-    debug!("Hello, World!");
-    error!("Error Log here!")
+    info!("Hello, world");
 }
-
+/*
 fn _benchmark() {
     let config = Config::builder().build();
 
@@ -62,3 +62,4 @@ fn _benchmark() {
     println!("Mogger Logging took             : {:?}", duration_b);
     println!("Print Logging took              : {:?}", duration_c);
 }
+*/
