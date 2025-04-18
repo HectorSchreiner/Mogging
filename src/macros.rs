@@ -55,7 +55,7 @@ macro_rules! error {
 ///Macro to log a debug log, with the global mogger.
 ///# Example
 ///```no_run
-///debug!("Hello, World!);
+///debug!("Hello, World!");
 ///```
 #[macro_export]
 macro_rules! debug {
