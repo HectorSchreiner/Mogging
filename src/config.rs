@@ -4,10 +4,8 @@ use crate::LogLevel;
 #[derive(Debug)]
 pub struct Config {
     pub output: OutputType,
-    pub time_option: Option<TimeFormatType>,
-    pub level_option: Option<LevelFormatType>,
-    pub batch_size: usize,
-    pub flush_timer: f32,
+    pub time_option: Option<TimeFormat>,
+    pub level_option: Option<LevelFormat>,
     pub level_clamp: (LogLevel, LogLevel),
 }
 
@@ -25,10 +23,8 @@ impl From<ConfigBuilder> for Config {
 
 pub struct ConfigBuilder {
     pub output: OutputType,
-    pub time_option: Option<TimeFormatType>,
-    pub level_option: Option<LevelFormatType>,
-    pub batch_size: usize,
-    pub flush_timer: f32,
+    pub time_option: Option<TimeFormat>,
+    pub level_option: Option<LevelFormat>,
     // min, max
     pub level_clamp: (LogLevel, LogLevel),
 }
@@ -37,10 +33,8 @@ impl ConfigBuilder {
     pub fn default() -> ConfigBuilder {
         Self {
             output: OutputType::Console,
-            time_option: Some(TimeFormatType::Default),
-            level_option: Some(LevelFormatType::Default),
-            batch_size: 0,
-            flush_timer: 0.0,
+            time_option: None,
+            level_option: None,
             level_clamp: (LogLevel::Debug, LogLevel::Error),
         }
     }
@@ -50,23 +44,13 @@ impl ConfigBuilder {
         self
     }
 
-    pub fn timeformat(mut self, format: Option<TimeFormatType>) -> Self {
-        self.time_option = format;
+    pub fn timeformat(mut self, format: TimeFormat) -> Self {
+        self.time_option = Some(format);
         self
     }
 
-    pub fn level_format(mut self, format: Option<LevelFormatType>) -> Self {
-        self.level_option = format;
-        self
-    }
-
-    pub fn batch_size(mut self, batch_size: usize) -> Self {
-        self.batch_size = batch_size;
-        self
-    }
-
-    pub fn flush_timer(mut self, flush_timer: f32) -> Self {
-        self.flush_timer = flush_timer;
+    pub fn level_format(mut self, format: LevelFormat) -> Self {
+        self.level_option = Some(format);
         self
     }
 
@@ -80,8 +64,6 @@ impl ConfigBuilder {
             output: self.output,
             time_option: self.time_option,
             level_option: self.level_option,
-            batch_size: self.batch_size,
-            flush_timer: self.flush_timer,
             level_clamp: self.level_clamp,
         }
     }
@@ -89,15 +71,17 @@ impl ConfigBuilder {
 #[derive(Debug)]
 pub enum OutputType {
     Console,
+    File,
 }
 
 #[derive(Debug)]
-pub enum TimeFormatType {
+pub enum TimeFormat {
     Default,
     ClockDateMonthYear,
 }
 
 #[derive(Debug)]
-pub enum LevelFormatType {
+pub enum LevelFormat {
     Default,
+    Colored,
 }

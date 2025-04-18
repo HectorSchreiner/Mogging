@@ -6,21 +6,25 @@ mod mogger;
 use std::io::{self, stdout, BufWriter, Write};
 use std::time::Instant;
 
-use config::Config;
+use config::{Config, LevelFormat, TimeFormat};
 use crossterm::terminal::disable_raw_mode;
 use global::*;
 use mogger::Mogger;
 use mogger::*;
 
 fn main() {
-    benchmark();
+    //benchmark();
+    Mogger::default();
+
+    debug!("Hello, World!");
+    error!("Error Log here!")
 }
 
-fn benchmark() {
+fn _benchmark() {
     let config = Config::builder().build();
 
     Mogger::new(config, LogFormat::PlainText).init();
-    Mogger::create_default_mogger().init();
+    Mogger::default();
 
     let amm = 100000;
     let a = Instant::now(); // Start timer

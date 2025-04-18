@@ -2,7 +2,7 @@ use mogging::{LogLevel, Mogger, MOGGER};
 
 #[test]
 pub fn initialize_test() {
-    Mogger::create_default_mogger().init();
+    Mogger::default();
     assert!(MOGGER.get().is_some());
 }
 
