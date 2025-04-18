@@ -34,11 +34,11 @@ impl Mogger {
     }
 
     /// Create a new mogger, from a configuraiton and an output_format specification.
-    /// Returns a Mogger.
+    /// Returns a Mogger, that also needs to be initialized.
     ///
     /// # Example
     /// ```no_run
-    /// Mogger::new()
+    /// Mogger::new().init();
     /// ```
     pub fn new<T: Into<Config>>(config: T, output_format: LogFormat) -> Mogger {
         // This mogger still needs initialisation with the init method.
@@ -52,6 +52,11 @@ impl Mogger {
     }
 
     /// Creates and initializes a new Mogger with default options.
+    ///     ///
+    /// # Example
+    /// ```no_run
+    /// Mogger::default();
+    /// ```
     pub fn default() {
         let config = Config::builder()
             .timeformat(TimeFormat::ClockDateMonthYear)

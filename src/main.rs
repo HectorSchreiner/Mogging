@@ -14,17 +14,13 @@ use mogger::Mogger;
 use mogger::*;
 
 fn main() {
-    //benchmark();
-    Mogger::default();
-
-    info!("Hello, world");
+    benchmark();
 }
-/*
-fn _benchmark() {
+
+fn benchmark() {
     let config = Config::builder().build();
 
     Mogger::new(config, LogFormat::PlainText).init();
-    Mogger::default();
 
     let amm = 100000;
     let a = Instant::now(); // Start timer
@@ -62,4 +58,3 @@ fn _benchmark() {
     println!("Mogger Logging took             : {:?}", duration_b);
     println!("Print Logging took              : {:?}", duration_c);
 }
-*/
