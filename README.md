@@ -7,10 +7,7 @@ Mogging is an aMazingly & Blazingly Fast Logging Libary written in Rust, which m
 - [x] Basic Logging to the console
 - [x] Gangster Logging Macros
 - [x] Test cases, add testing
-- [x] Log Level sorting (only show logs from a certain level and up)
-
-**next**
-- [ ] dynamic batch sizing, and flush timing
+- [x] Log Level sorting (only show logs from a certain level and up
 
 **Upcoming Features**
 - [ ] File Logging, both overwrite and append mode. optionally timestamps in filenames
