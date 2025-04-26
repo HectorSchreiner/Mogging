@@ -1,5 +1,5 @@
 # Fast Logging Libary
-Mogging is an aMazingly & Blazingly Fast Logging Libary written in Rust, which mogs all other logging libaries. The main Purpouse of "mogging" (as in the name of the libary) is to give the user as much customisability as possible, to how to logs are handled and displayed/outputted.
+Mogging is an aMazingly & Blazingly Fast Logging Libary written in Rust, which mogs all other logging libaries. The main Purpouse of "mogging" (as in the name of the libary) is to give the user as much customisability as possible, to how to logs are handled and displayed/outputted
 # Features
 
 **Done Diego**
